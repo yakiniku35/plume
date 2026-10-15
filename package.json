@@ -15,13 +15,18 @@
     "icon": "node scripts/make-icon.mjs",
     "dist": "electron-vite build && electron-builder --mac --dir",
     "dist:dmg": "electron-vite build && electron-builder --mac",
-    "test": "node --test src/renderer/src/lib/*.test.mts"
+    "test": "node --test src/renderer/src/lib/*.test.mts",
+    "native": "node scripts/build-native.mjs",
+    "predev": "node scripts/build-native.mjs",
+    "prebuild": "node scripts/build-native.mjs"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "exifr": "^7.1.3"
   },
   "devDependencies": {
+    "@dicebear/avataaars": "^9.4.2",
+    "@dicebear/core": "^9.4.3",
     "@huggingface/transformers": "^3.5.0",
     "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/vite": "^4.0.0",
@@ -72,6 +77,12 @@
     },
     "dmg": {
       "sign": false
-    }
+    },
+    "extraResources": [
+      {
+        "from": "resources/plume-maps",
+        "to": "plume-maps"
+      }
+    ]
   }
 }

@@ -5,3 +5,4 @@ dist
 *.log
 .env
 build/icon.iconset
+resources/plume-maps
