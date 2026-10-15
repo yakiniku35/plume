@@ -36,10 +36,10 @@ export function AvatarEditor({ value, onChange, onUpload }: { value?: AvatarT; o
             </button>
           ))}
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex flex-wrap gap-x-10 gap-y-5">
           <div>
             <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('skinTone')}</div>
-            <div className="flex gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {SKIN_TONES.map((_, i) => (
                 <button key={i} onClick={() => setTone(i)} aria-pressed={tone === i} className={cx('size-7 rounded-full border transition-transform', tone === i ? 'scale-110 border-fg' : 'border-line')} style={{ background: ['#f1c27d', '#ffdbb4', '#e8c39e', '#c68642', '#8d5524', '#4a2912'][i] }} />
               ))}
@@ -47,7 +47,7 @@ export function AvatarEditor({ value, onChange, onUpload }: { value?: AvatarT; o
           </div>
           <div>
             <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('background')}</div>
-            <div className="flex gap-1.5">
+            <div className="flex flex-wrap gap-1.5">
               {AVATAR_BGS.map((bg) => (
                 <button key={bg} onClick={() => setBg(bg)} aria-pressed={a.bg === bg} className={cx('size-7 rounded-full border transition-transform', a.bg === bg ? 'scale-110 border-fg' : 'border-line')} style={{ background: bg }} />
               ))}
