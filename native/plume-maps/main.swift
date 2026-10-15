@@ -66,8 +66,9 @@ case "snapshot":
     NSGraphicsContext.restoreGraphicsState()
     let png = rep.representation(using: .png, properties: [:]) ?? Data()
     let points: [[Double]] = markers.map { m in
+      // AppKit images have a bottom-left origin; the renderer expects top-left.
       let p = snapshot.point(for: CLLocationCoordinate2D(latitude: m.lat, longitude: m.lng))
-      return [Double(p.x), Double(p.y)]
+      return [Double(p.x), req.height - Double(p.y)]
     }
     let r = options.region
     emit([
