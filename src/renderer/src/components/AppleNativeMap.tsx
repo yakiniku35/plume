@@ -74,7 +74,8 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
         })
         if (id !== reqId.current) return
         setSnap(res)
-        if (!r || fitMode) setRegion(res.region)
+        // Keep the region object stable when nothing changed, or the effect below would refetch forever.
+        if (!r || fitMode) setRegion((prev) => (prev && sameRegion(prev, res.region) ? prev : res.region))
       } catch (e) {
         console.warn('apple map snapshot failed', e)
       } finally {
@@ -84,10 +85,12 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
     [size.w, size.h, dark, markerKey, fitMode] // eslint-disable-line react-hooks/exhaustive-deps
   )
 
+  // In fit mode the region is an output, not an input, so it must not retrigger the fetch.
+  const regionKey = fitMode ? 'fit' : JSON.stringify(region)
   useEffect(() => {
-    const t = setTimeout(() => void fetchSnap(region), 120)
+    const t = setTimeout(() => void fetchSnap(fitMode ? null : region), 120)
     return () => clearTimeout(t)
-  }, [fetchSnap, region])
+  }, [fetchSnap, regionKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   function onPointerDown(e: PointerEvent<HTMLDivElement>): void {
     if (!interactive || !region) return
@@ -164,6 +167,9 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
   )
 }
 
+function sameRegion(a: MapRegion, b: MapRegion): boolean {
+  return Math.abs(a.lat - b.lat) < 1e-9 && Math.abs(a.lng - b.lng) < 1e-9 && Math.abs(a.latDelta - b.latDelta) < 1e-9 && Math.abs(a.lngDelta - b.lngDelta) < 1e-9
+}
 function clamp(v: number, lo: number, hi: number): number {
   return Math.min(hi, Math.max(lo, v))
 }
