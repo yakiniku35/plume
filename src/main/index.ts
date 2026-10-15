@@ -127,11 +127,11 @@ function installCsp(): void {
     `default-src 'self'`,
     `script-src 'self' 'wasm-unsafe-eval' https://cdn.jsdelivr.net https://cdn.apple-mapkit.com${dev ? " 'unsafe-inline'" : ''}`,
     `style-src 'self' 'unsafe-inline'`,
-    `img-src 'self' media: thumb: avatar: data: blob: https://*.basemaps.cartocdn.com https://*.apple-mapkit.com`,
+    `img-src 'self' media: thumb: avatar: data: blob: https://tile.openstreetmap.org https://*.tile.openstreetmap.org https://*.apple-mapkit.com`,
     `media-src 'self' media: blob:`,
     `font-src 'self' data: font:`,
     `worker-src 'self' blob:`,
-    `connect-src 'self' media: thumb: blob: data: https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn.jsdelivr.net https://*.apple-mapkit.com https://*.basemaps.cartocdn.com${dev ? ' ws://localhost:* http://localhost:*' : ''}`
+    `connect-src 'self' media: thumb: blob: data: https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn.jsdelivr.net https://*.apple-mapkit.com https://tile.openstreetmap.org${dev ? ' ws://localhost:* http://localhost:*' : ''}`
   ].join('; ')
   session.defaultSession.webRequest.onHeadersReceived((details, callback) => {
     const isApp = details.url.startsWith('file://') || details.url.startsWith('http://localhost')

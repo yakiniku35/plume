@@ -29,10 +29,10 @@ export function appleMapsUrl(p: GeoPoint): string {
   return `https://maps.apple.com/?ll=${p.lat},${p.lng}&q=${q}&z=15`
 }
 
-/* ---------------- Leaflet + CARTO Positron / Dark Matter ---------------- */
+/* ---------------- Leaflet + OpenStreetMap (keyless; desaturated via CSS, inverted in dark mode) ---------------- */
 
-const CARTO_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
-const tileUrl = (dark: boolean): string => `https://{s}.basemaps.cartocdn.com/${dark ? 'dark_all' : 'light_all'}/{z}/{x}/{y}{r}.png`
+const OSM_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+const OSM_URL = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png'
 
 function Resize(): null {
   const map = useMap()
@@ -55,7 +55,6 @@ function Focus({ center, zoom }: { center?: GeoPoint; zoom: number }): null {
 }
 
 function LeafletMap({ markers, center, zoom = 13, onClick, interactive = true, className }: MapViewProps): JSX.Element {
-  const { dark } = useApp()
   const bounds = !center && markers.length > 0 ? markers.map((m) => [m.lat, m.lng] as [number, number]) : undefined
   const c: [number, number] = center ? [center.lat, center.lng] : [25.04, 121.56]
   return (
@@ -71,7 +70,7 @@ function LeafletMap({ markers, center, zoom = 13, onClick, interactive = true, c
       dragging={interactive}
       doubleClickZoom={interactive}
     >
-      <TileLayer key={dark ? 'dark' : 'light'} url={tileUrl(dark)} attribution={CARTO_ATTR} subdomains="abcd" maxZoom={19} />
+      <TileLayer url={OSM_URL} attribution={OSM_ATTR} maxZoom={19} />
       <Resize />
       <Clicks onClick={onClick} />
       <Focus center={center} zoom={zoom} />

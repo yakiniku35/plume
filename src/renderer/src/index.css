@@ -155,7 +155,10 @@
     font-family: var(--font-sans);
   }
   .leaflet-tile-pane {
-    filter: saturate(0.85);
+    filter: grayscale(1) contrast(0.92) brightness(1.02);
+  }
+  .dark .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) grayscale(1) brightness(0.82) contrast(0.9);
   }
   .leaflet-control-attribution {
     background: transparent !important;
