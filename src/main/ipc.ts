@@ -4,7 +4,7 @@ import { basename, extname, join } from 'path'
 import { paths } from './paths'
 import type { Avatar, DayMark, Entry, ImportRequest, Settings, StorageProvider } from '@shared/types'
 import { register, login, logout, currentUser, requireUser, updateProfile } from './auth'
-import { listEntries, saveEntry, deleteEntry, getAttachment, listMarks, saveMark, deleteMark } from './db'
+import { listEntries, saveEntry, deleteEntry, getAttachment, listAttachments, listMarks, saveMark, deleteMark } from './db'
 import { getSettings, setSettings, getStorageConfig, setStorageConfig } from './settings'
 import { getSecret, setSecret } from './secrets'
 import { importFile, saveRecording, deleteAttachment } from './media'
@@ -86,8 +86,9 @@ export function registerIpc(): void {
   ipcMain.handle('entries:list', () => {
     const u = requireUser()
     const entries = listEntries(u.id)
-    // Refresh attachment metadata from the index so a migration is reflected everywhere.
-    return entries.map((e) => ({ ...e, attachments: e.attachments.map((a) => getAttachment(u.id, a.id) ?? a) }))
+    // Refresh attachment metadata from the index (read once) so a migration is reflected everywhere.
+    const index = listAttachments(u.id)
+    return entries.map((e) => ({ ...e, attachments: e.attachments.map((a) => index[a.id] ?? a) }))
   })
   ipcMain.handle('entries:save', (_e, raw) => {
     const u = requireUser()
