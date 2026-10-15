@@ -167,7 +167,7 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
         />
       ))}
       {interactive && (
-        <div className="absolute bottom-3 right-3 flex flex-col overflow-hidden rounded-lg border border-line bg-bg/90 shadow-sm backdrop-blur">
+        <div className="absolute bottom-3 right-3 z-10 flex flex-col overflow-hidden rounded-lg border border-line bg-bg/90 shadow-sm backdrop-blur">
           <button aria-label={t('zoomIn')} onClick={(e) => { e.stopPropagation(); zoomBy(0.5) }} onPointerDown={(e) => e.stopPropagation()} className="flex size-8 items-center justify-center text-fg-2 hover:text-fg">
             <Plus size={14} />
           </button>
@@ -181,8 +181,8 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
           )}
         </div>
       )}
+      {loading && !snap && <div className="pointer-events-none absolute inset-0 animate-pulse bg-elev" />}
       <span className="pointer-events-none absolute bottom-2 left-3 text-[10px] text-fg-3"> {t('mapsByApple')}</span>
-      {loading && !snap && <div className="absolute inset-0 animate-pulse bg-elev" />}
     </div>
   )
 }
