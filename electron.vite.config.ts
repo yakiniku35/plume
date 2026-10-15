@@ -5,8 +5,8 @@ import { resolve } from 'path'
 
 export default defineConfig({
   main: {
-    // nanoid v5 is ESM-only; bundle it instead of require()-ing it from node_modules.
-    plugins: [externalizeDepsPlugin({ exclude: ['nanoid'] })],
+    // Only bcryptjs and exifr are runtime dependencies; everything else is bundled.
+    plugins: [externalizeDepsPlugin()],
     resolve: { alias: { '@shared': resolve('src/shared') } }
   },
   preload: {
