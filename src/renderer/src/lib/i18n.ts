@@ -209,7 +209,15 @@ const en = {
   skinTone: 'Skin tone',
   background: 'Background',
   uploadPicture: 'Upload picture…',
-  displayName: 'Display name'
+  displayName: 'Display name',
+  hintToday: 'Words written in entries dated today.',
+  hintStreak: 'Consecutive days with at least one entry, counting back from today or yesterday.',
+  hintLongest: 'The longest run of consecutive writing days ever.',
+  hintTotalWords: 'All words in the last 30 days, Chinese characters counted one each.',
+  hintActiveDays: 'Days in the last 30 with at least one entry.',
+  hintAvgWords: 'Average words per active day in the last 30 days.',
+  weekOf: 'Week of {date}',
+  hourRange: '{from}–{to}'
 }
 
 export type Dict = typeof en
@@ -422,12 +430,21 @@ const zhHans: Dict = {
   skinTone: '肤色',
   background: '背景',
   uploadPicture: '上传图片…',
-  displayName: '显示名称'
+  displayName: '显示名称',
+  hintToday: '今天日期下所有日记的字数。',
+  hintStreak: '从今天或昨天往回数，连续有写日记的天数。',
+  hintLongest: '有史以来最长的连续写作天数。',
+  hintTotalWords: '过去 30 天的总字数，中文按字计算。',
+  hintActiveDays: '过去 30 天里至少写了一篇的天数。',
+  hintAvgWords: '过去 30 天里，有写的日子平均字数。',
+  weekOf: '{date} 那一周',
+  hourRange: '{from}–{to}'
 }
 
 const zhHant: Dict = {
   ...zhHans,
   tagline: '安靜地記錄每一天。',
+  moods: ['很糟', '低落', '一般', '不錯', '很好'],
   signIn: '登入',
   createAccount: '建立帳號',
   email: '電子郵件',
@@ -612,7 +629,15 @@ const zhHant: Dict = {
   skinTone: '膚色',
   background: '背景',
   uploadPicture: '上傳圖片…',
-  displayName: '顯示名稱'
+  displayName: '顯示名稱',
+  hintToday: '今天日期下所有日記的字數。',
+  hintStreak: '從今天或昨天往回數，連續有寫日記的天數。',
+  hintLongest: '有史以來最長的連續寫作天數。',
+  hintTotalWords: '過去 30 天的總字數，中文按字計算。',
+  hintActiveDays: '過去 30 天裡至少寫了一篇的天數。',
+  hintAvgWords: '過去 30 天裡，有寫的日子平均字數。',
+  weekOf: '{date} 那一週',
+  hourRange: '{from}–{to}'
 }
 
 export const dictionaries: Record<Locale, Dict> = { en, 'zh-Hans': zhHans, 'zh-Hant': zhHant }
