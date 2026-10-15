@@ -73,6 +73,8 @@ export interface DayMark {
 export type Avatar =
   | { kind: 'emoji'; emoji: string; tone: 0 | 1 | 2 | 3 | 4 | 5; bg: string }
   | { kind: 'image'; file: string; bg: string }
+  /** Built part by part (hair, eyes, mouth, skin, glasses, beard, clothes) from the Avataaars set. */
+  | { kind: 'built'; parts: Record<string, string>; bg: string }
 
 /** Native Apple Maps (macOS MapKit via the bundled plume-maps helper). */
 export interface MapSnapshotRequest {

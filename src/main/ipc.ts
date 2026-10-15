@@ -62,6 +62,10 @@ export function registerIpc(): void {
         out.avatar = { kind: 'emoji', emoji: a.emoji, tone, bg }
       } else if (a.kind === 'image' && typeof a.file === 'string' && /^[\w.-]{1,80}$/.test(a.file)) {
         out.avatar = { kind: 'image', file: a.file, bg }
+      } else if (a.kind === 'built' && isObj(a.parts)) {
+        const parts: Record<string, string> = {}
+        for (const [k, v] of Object.entries(a.parts).slice(0, 20)) if (/^[a-zA-Z]{1,30}$/.test(k) && typeof v === 'string' && /^[\w]{0,40}$/.test(v)) parts[k] = v
+        out.avatar = { kind: 'built', parts, bg }
       } else throw new Error('BAD_REQUEST')
     }
     return updateProfile(u.id, out)
