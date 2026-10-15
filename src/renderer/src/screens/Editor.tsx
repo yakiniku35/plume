@@ -18,7 +18,7 @@ import type { GeoPoint } from '@shared/types'
 const MOOD_GLYPH = ['◌', '◔', '◑', '◕', '●']
 
 export function Editor(): JSX.Element {
-  const { entries, selectedId, updateEntry, deleteEntry, saving, settings, marks } = useApp()
+  const { entries, selectedId, updateEntry, patchEntry, deleteEntry, saving, settings, marks } = useApp()
   const { t, locale, dict } = useI18n()
   const entry = useMemo(() => entries.find((e) => e.id === selectedId), [entries, selectedId])
   const bodyRef = useRef<HTMLTextAreaElement>(null)
@@ -53,13 +53,14 @@ export function Editor(): JSX.Element {
     const list = Array.from(files)
     if (list.length === 0 || !entry) return
     setImporting((n) => n + list.length)
-    let current = entry
+    const id = entry.id
     const found: GeoPoint[] = []
+    let latest: Entry | undefined = entry
     for (const f of list) {
       try {
         const att = await importFile(f)
-        current = { ...current, attachments: [...current.attachments, att] }
-        updateEntry(current)
+        // Merge into the latest state: the user may have kept typing while the file imported.
+        latest = patchEntry(id, (e) => ({ ...e, attachments: [...e.attachments, att] }))
         if (att.location) found.push(att.location)
       } catch (e) {
         console.error('import failed', f.name, e)
@@ -68,7 +69,7 @@ export function Editor(): JSX.Element {
       }
     }
     // Photos carry GPS data: offer it, never apply it silently.
-    if (found.length && !current.location) {
+    if (found.length && latest && !latest.location) {
       const point = found[0]
       setSuggest({ point, count: found.length })
       const name = point.name ?? (await window.plume.app.reverseGeocode(point))

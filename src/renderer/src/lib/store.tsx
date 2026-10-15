@@ -35,6 +35,8 @@ interface AppActions {
   pickAvatarImage(): Promise<void>
   deleteMark(id: string): Promise<void>
   updateEntry(entry: Entry): void
+  /** Update from the latest state; use for async flows so concurrent edits are not overwritten. */
+  patchEntry(id: string, fn: (latest: Entry) => Entry): Entry | undefined
   deleteEntry(id: string): Promise<void>
   refreshEntries(): Promise<void>
   setSettings(patch: Parameters<Window['plume']['settings']['set']>[0]): Promise<void>
@@ -70,6 +72,8 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
   const [query, setQuery] = useState('')
   const [saving, setSaving] = useState(false)
   const pending = useRef(new Map<string, ReturnType<typeof setTimeout>>())
+  const entriesRef = useRef<Entry[]>([])
+  entriesRef.current = entries
 
   const refreshEntries = useCallback(async () => {
     const [list, m] = await Promise.all([window.plume.entries.list(), window.plume.marks.list()])
@@ -168,6 +172,17 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
     )
   }, [])
 
+  const patchEntry = useCallback(
+    (id: string, fn: (latest: Entry) => Entry): Entry | undefined => {
+      const latest = entriesRef.current.find((e) => e.id === id)
+      if (!latest) return undefined
+      const next = fn(latest)
+      updateEntry(next)
+      return next
+    },
+    [updateEntry]
+  )
+
   const deleteEntry = useCallback(async (id: string) => {
     const t = pending.current.get(id)
     if (t) clearTimeout(t)
@@ -216,10 +231,10 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
   const value = useMemo<AppState & AppActions>(
     () => ({
       booted, user, entries, marks, settings, storage, dark, view, selectedId, query, saving,
-      setView, select, setQuery, login, register, logout, newEntry, updateEntry, deleteEntry, refreshEntries, saveMark, deleteMark, updateProfile, pickAvatarImage,
+      setView, select, setQuery, login, register, logout, newEntry, updateEntry, patchEntry, deleteEntry, refreshEntries, saveMark, deleteMark, updateProfile, pickAvatarImage,
       setSettings, setOpenaiKey, setAppleMapsToken, pickFont, setStorage, refreshStorage
     }),
-    [booted, user, entries, marks, settings, storage, dark, view, selectedId, query, saving, login, register, logout, newEntry, updateEntry, deleteEntry, refreshEntries, saveMark, deleteMark, updateProfile, pickAvatarImage, setSettings, setOpenaiKey, setAppleMapsToken, pickFont, setStorage, refreshStorage]
+    [booted, user, entries, marks, settings, storage, dark, view, selectedId, query, saving, login, register, logout, newEntry, updateEntry, patchEntry, deleteEntry, refreshEntries, saveMark, deleteMark, updateProfile, pickAvatarImage, setSettings, setOpenaiKey, setAppleMapsToken, pickFont, setStorage, refreshStorage]
   )
 
   return (
