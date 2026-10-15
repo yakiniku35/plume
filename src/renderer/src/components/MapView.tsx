@@ -166,7 +166,9 @@ function AppleMap({ markers, center, zoom = 13, onClick, interactive = true, cla
       m.setRegionAnimated(new mapkit.CoordinateRegion(new mapkit.Coordinate(25, 121), new mapkit.CoordinateSpan(60, 90)), false)
     }
   }
-  useEffect(sync, [markers, center?.lat, center?.lng, zoom, dark]) // eslint-disable-line react-hooks/exhaustive-deps
+  // Insights rebuilds the markers array on every render; compare by content so annotations are not churned.
+  const markerKey = JSON.stringify(markers)
+  useEffect(sync, [markerKey, center?.lat, center?.lng, zoom, dark]) // eslint-disable-line react-hooks/exhaustive-deps
 
   if (failed) return <LeafletMap markers={markers} center={center} zoom={zoom} onClick={onClick} interactive={interactive} className={className} />
   return <div ref={el} className={className ?? 'size-full'} />
