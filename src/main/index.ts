@@ -1,4 +1,4 @@
-import { app, BrowserWindow, Menu, nativeTheme, protocol, net, session, shell, type MenuItemConstructorOptions } from 'electron'
+import { app, BrowserWindow, Menu, nativeTheme, protocol, net, screen, session, shell, type MenuItemConstructorOptions } from 'electron'
 import { join } from 'path'
 import { pathToFileURL } from 'url'
 import { promises as fs } from 'fs'
@@ -24,12 +24,18 @@ protocol.registerSchemesAsPrivileged([
 let mainWindow: BrowserWindow | null = null
 
 function createWindow(): void {
-  const bounds = getSettings().windowBounds
+  const saved = getSettings().windowBounds
+  // Only restore a position that is still on a connected display.
+  const onScreen = saved && screen.getAllDisplays().some((d) => {
+    const a = d.workArea
+    return saved.x < a.x + a.width - 100 && saved.x + saved.width > a.x + 100 && saved.y >= a.y - 20 && saved.y < a.y + a.height - 100
+  })
+  const bounds = onScreen ? saved : saved ? { width: saved.width, height: saved.height } : undefined
   mainWindow = new BrowserWindow({
     width: bounds?.width ?? 1180,
     height: bounds?.height ?? 780,
-    x: bounds?.x,
-    y: bounds?.y,
+    x: bounds && 'x' in bounds ? bounds.x : undefined,
+    y: bounds && 'y' in bounds ? bounds.y : undefined,
     minWidth: 960,
     minHeight: 640,
     show: false,
