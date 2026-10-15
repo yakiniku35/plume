@@ -52,21 +52,15 @@ export function registerIpc(): void {
   ipcMain.handle('auth:updateProfile', (_e, p) => {
     const u = requireUser()
     if (!isObj(p)) throw new Error('BAD_REQUEST')
-    const out: { name?: string; avatar?: Avatar } = {}
+    const out: { name?: string; avatar?: Avatar | null } = {}
     if (typeof p.name === 'string') out.name = p.name.slice(0, 100)
-    if (isObj(p.avatar)) {
+    if (p.avatar === null) out.avatar = null
+    else if (isObj(p.avatar)) {
       const a = p.avatar
       const bg = typeof a.bg === 'string' && /^#[0-9a-f]{3,8}$/i.test(a.bg) ? a.bg : '#e5e5e1'
-      if (a.kind === 'emoji' && typeof a.emoji === 'string' && a.emoji.length <= 24) {
-        const tone = typeof a.tone === 'number' && a.tone >= 0 && a.tone <= 5 ? (Math.floor(a.tone) as Avatar extends { tone: infer T } ? T : never) : 0
-        out.avatar = { kind: 'emoji', emoji: a.emoji, tone, bg }
-      } else if (a.kind === 'image' && typeof a.file === 'string' && /^[\w.-]{1,80}$/.test(a.file)) {
-        out.avatar = { kind: 'image', file: a.file, bg }
-      } else if (a.kind === 'built' && isObj(a.parts)) {
-        const parts: Record<string, string> = {}
-        for (const [k, v] of Object.entries(a.parts).slice(0, 20)) if (/^[a-zA-Z]{1,30}$/.test(k) && typeof v === 'string' && /^[\w]{0,40}$/.test(v)) parts[k] = v
-        out.avatar = { kind: 'built', parts, bg }
-      } else throw new Error('BAD_REQUEST')
+      if (a.kind === 'image' && typeof a.file === 'string' && /^[\w.-]{1,80}$/.test(a.file)) out.avatar = { kind: 'image', file: a.file, bg }
+      else if (a.kind === 'initials') out.avatar = { kind: 'initials', bg }
+      else throw new Error('BAD_REQUEST')
     }
     return updateProfile(u.id, out)
   })

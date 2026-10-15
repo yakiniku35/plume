@@ -33,7 +33,7 @@ interface AppActions {
   logout(): Promise<void>
   newEntry(date?: string): Entry
   saveMark(mark: DayMark): Promise<void>
-  updateProfile(patch: { name?: string; avatar?: Avatar }): Promise<void>
+  updateProfile(patch: { name?: string; avatar?: Avatar | null }): Promise<void>
   pickAvatarImage(): Promise<void>
   deleteMark(id: string): Promise<void>
   updateEntry(entry: Entry): void
@@ -217,7 +217,7 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
     await window.plume.entries.remove(id)
   }, [])
 
-  const updateProfile = useCallback(async (patch: { name?: string; avatar?: Avatar }) => setUser(await window.plume.auth.updateProfile(patch)), [])
+  const updateProfile = useCallback(async (patch: { name?: string; avatar?: Avatar | null }) => setUser(await window.plume.auth.updateProfile(patch)), [])
   const pickAvatarImage = useCallback(async () => setUser(await window.plume.auth.pickAvatarImage()), [])
 
   const saveMark = useCallback(async (mark: DayMark) => {

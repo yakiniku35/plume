@@ -70,11 +70,8 @@ export interface DayMark {
   symbol?: string
 }
 
-export type Avatar =
-  | { kind: 'emoji'; emoji: string; tone: 0 | 1 | 2 | 3 | 4 | 5; bg: string }
-  | { kind: 'image'; file: string; bg: string }
-  /** Built part by part (hair, eyes, mouth, skin, glasses, beard, clothes) from the Avataaars set. */
-  | { kind: 'built'; parts: Record<string, string>; bg: string }
+/** An uploaded picture, or just a background colour behind the name's initial. */
+export type Avatar = { kind: 'image'; file: string; bg: string } | { kind: 'initials'; bg: string }
 
 /** Native Apple Maps (macOS MapKit via the bundled plume-maps helper). */
 export interface MapSnapshotRequest {
@@ -193,7 +190,7 @@ export interface PlumeApi {
     login(input: { email: string; password: string }): Promise<User>
     logout(): Promise<void>
     session(): Promise<User | null>
-    updateProfile(patch: { name?: string; avatar?: Avatar }): Promise<User>
+    updateProfile(patch: { name?: string; avatar?: Avatar | null }): Promise<User>
     /** Opens an image picker (PNG/JPEG/HEIC, e.g. an exported Memoji sticker) and sets it as the avatar. */
     pickAvatarImage(): Promise<User>
     avatarUrl(file: string): string

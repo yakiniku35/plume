@@ -1,34 +1,33 @@
-import { Upload } from 'lucide-react'
+import { Upload, X } from 'lucide-react'
 import type { Avatar as AvatarT } from '@shared/types'
 import { useI18n } from '@/lib/i18n'
-import { AVATAR_BGS, defaultAvatar } from '@/lib/avatar'
-import { DEFAULT_PARTS } from '@/lib/avatarBuilder'
 import { Button, cx } from '@/components/ui'
-import { Avatar } from '@/components/Avatar'
-import { AvatarBuilder } from '@/components/AvatarBuilder'
+import { Avatar, AVATAR_BGS } from '@/components/Avatar'
 
-/** Profile picture: build a person part by part, or upload a picture (e.g. an exported Memoji sticker). */
-export function AvatarEditor({ value, onChange, onUpload }: { value?: AvatarT; onChange: (a: AvatarT) => void; onUpload: () => void }): JSX.Element {
+/** Profile picture: upload one (e.g. an exported Memoji sticker); otherwise the name's initial on a chosen colour. */
+export function AvatarEditor({ value, name, onChange, onUpload }: { value?: AvatarT; name?: string; onChange: (a: AvatarT | null) => void; onUpload: () => void }): JSX.Element {
   const { t } = useI18n()
-  const a = value && value.kind !== 'emoji' ? value : defaultAvatar()
-  const parts = a.kind === 'built' ? a.parts : DEFAULT_PARTS
-
+  const bg = value?.bg ?? '#e5e5e1'
   return (
-    <div className="flex gap-8">
-      <div className="flex flex-col items-center gap-4">
-        <Avatar avatar={a} size={112} />
-        <Button size="sm" icon={<Upload size={14} />} onClick={onUpload}>
-          {t('uploadPicture')}
-        </Button>
-      </div>
-      <div className="min-w-0 flex-1 space-y-5">
+    <div className="flex items-center gap-8">
+      <Avatar avatar={value} name={name} size={112} />
+      <div className="min-w-0 flex-1 space-y-4">
         <p className="text-[13px] leading-relaxed text-fg-2">{t('avatarIntro')}</p>
-        <AvatarBuilder parts={parts} onChange={(next) => onChange({ kind: 'built', parts: next, bg: a.bg })} />
+        <div className="flex flex-wrap items-center gap-2">
+          <Button size="sm" icon={<Upload size={14} />} onClick={onUpload}>
+            {t('uploadPicture')}
+          </Button>
+          {value?.kind === 'image' && (
+            <Button size="sm" variant="ghost" icon={<X size={14} />} onClick={() => onChange(null)}>
+              {t('removePicture')}
+            </Button>
+          )}
+        </div>
         <div>
           <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('background')}</div>
           <div className="flex flex-wrap gap-1.5">
-            {AVATAR_BGS.map((bg) => (
-              <button key={bg} onClick={() => onChange({ ...a, bg })} aria-pressed={a.bg === bg} className={cx('size-7 rounded-full border transition-transform', a.bg === bg ? 'scale-110 border-fg' : 'border-line')} style={{ background: bg }} />
+            {AVATAR_BGS.map((c) => (
+              <button key={c} onClick={() => onChange(value?.kind === 'image' ? { ...value, bg: c } : { kind: 'initials', bg: c })} aria-pressed={bg === c} className={cx('size-7 rounded-full border transition-transform', bg === c ? 'scale-110 border-fg' : 'border-line')} style={{ background: c }} />
             ))}
           </div>
         </div>

@@ -94,7 +94,7 @@ export function Settings(): JSX.Element {
             </div>
             <div className="mt-6 border-t border-line pt-6">
               <div className="mb-4 text-[13px] font-medium text-fg-2">{t('avatar')}</div>
-              <AvatarEditor value={user.avatar} onChange={(a) => void updateProfile({ avatar: a })} onUpload={() => void pickAvatarImage()} />
+              <AvatarEditor value={user.avatar} name={user.name} onChange={(a) => void updateProfile({ avatar: a })} onUpload={() => void pickAvatarImage()} />
             </div>
           </Card>
 

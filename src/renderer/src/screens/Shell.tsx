@@ -63,7 +63,7 @@ export function Shell(): JSX.Element {
           </div>
         )}
         <button onClick={() => setView('settings')} className="no-drag mt-auto flex items-center gap-2.5 border-t border-line px-5 py-3.5 text-left hover:bg-fg/[0.04]">
-          <Avatar avatar={user?.avatar} size={28} />
+          <Avatar avatar={user?.avatar} name={user?.name} size={28} />
           <span className="truncate text-[13px] text-fg-2">{user?.name}</span>
         </button>
       </aside>

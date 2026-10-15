@@ -79,13 +79,14 @@ export function currentUser(): User | null {
   return sessionCache.user
 }
 
-export function updateProfile(userId: string, patch: { name?: string; avatar?: Avatar }): User {
+export function updateProfile(userId: string, patch: { name?: string; avatar?: Avatar | null }): User {
   const accounts = loadAccounts()
   const idx = accounts.findIndex((a) => a.id === userId)
   if (idx < 0) throw new Error('NOT_AUTHENTICATED')
   const next: Account = { ...accounts[idx] }
   if (patch.name !== undefined) next.name = patch.name.trim() || next.name
-  if (patch.avatar !== undefined) next.avatar = patch.avatar
+  if (patch.avatar === null) delete next.avatar
+  else if (patch.avatar !== undefined) next.avatar = patch.avatar
   accounts[idx] = next
   saveAccounts(accounts)
   return toUser(next)

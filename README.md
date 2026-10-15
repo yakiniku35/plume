@@ -17,7 +17,7 @@
 - **Insights**: today's words and streak, a 30‑day activity grid with a comparison against the previous 30 days, words per week, mood over time, when you tend to write, the places you've been, top tags and words.
 - **Storage you control.** Text always stays on your Mac. Photos and recordings live in a folder you pick, or in your own Google Drive so your laptop stays light. Switching providers migrates existing files.
 - **Fonts.** Pick a built-in typeface, type any installed font's name, or import a `.ttf` / `.otf` / `.woff` file.
-- **Avatars**: Apple people emoji with skin tones, a build-a-person maker (hair, eyes, eyebrows, mouth, skin, glasses, beard, clothes, built on the free Avataaars set), or an uploaded picture such as a Memoji sticker.
+- **Avatars**: upload a picture (an exported Memoji sticker works well); otherwise the first letter of your name on a colour you choose.
 - **Accounts** are local: each person on the Mac gets their own journal, protected by a password (bcrypt). Nothing is sent anywhere unless you connect Google Drive or OpenAI.
 - English, 简体中文 and 繁體中文. Light and dark, following the system.
 
@@ -82,11 +82,11 @@ npm test            # insight maths
 npm run icon        # regenerate build/icon.icns from build/icon.svg
 ```
 
-Stack: Electron 33, electron-vite, React 18, Tailwind CSS 4, motion, MapKit (Swift helper), Leaflet, transformers.js, DiceBear Avataaars.
+Stack: Electron 33, electron-vite, React 18, Tailwind CSS 4, motion, MapKit (Swift helper), Leaflet, transformers.js.
 
 ## 中文說明
 
-Plume 是一款安靜的 macOS 日記 App。文字永遠留在你的 Mac 上；照片和錄音可以放在本機資料夾或你自己的 Google Drive。支援語音輸入（系統聽寫、本機 Whisper 或 OpenAI）、照片地點、原生 Apple 地圖（不需要開發者帳號）、日曆與特別的日子、30 天寫作洞察、自訂字體、自訂人物頭像，以及本機帳號登入。介面支援繁體中文、简体中文與英文。
+Plume 是一款安靜的 macOS 日記 App。文字永遠留在你的 Mac 上；照片和錄音可以放在本機資料夾或你自己的 Google Drive。支援語音輸入（系統聽寫、本機 Whisper 或 OpenAI）、照片地點、原生 Apple 地圖（不需要開發者帳號）、日曆與特別的日子、30 天寫作洞察、自訂字體、上傳頭像，以及本機帳號登入。介面支援繁體中文、简体中文與英文。
 
 從原始碼執行：`npm install` 之後 `npm run dev`；打包 DMG：`npm run dist:dmg`。
 
