@@ -71,8 +71,6 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  nativeTheme.on('updated', () => mainWindow?.webContents.send('app:nativeTheme', nativeTheme.shouldUseDarkColors))
-
   if (isDev && process.env['ELECTRON_RENDERER_URL']) {
     void mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
   } else {
@@ -199,6 +197,9 @@ function installFontProtocol(): void {
 app.setName('Plume')
 
 void app.whenReady().then(() => {
+  nativeTheme.on('updated', () => {
+    for (const w of BrowserWindow.getAllWindows()) w.webContents.send('app:nativeTheme', nativeTheme.shouldUseDarkColors)
+  })
   installCsp()
   installProtocols()
   installFontProtocol()
