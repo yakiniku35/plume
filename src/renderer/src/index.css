@@ -1,0 +1,182 @@
+@import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --bg: #ffffff;
+  --bg-elev: #f7f7f5;
+  --bg-sidebar: rgba(246, 246, 244, 0.72);
+  --fg: #111111;
+  --fg-2: #5c5c5a;
+  --fg-3: #9a9a97;
+  --line: rgba(0, 0, 0, 0.08);
+  --line-strong: rgba(0, 0, 0, 0.16);
+  --accent: #c2410c;
+  --accent-soft: rgba(194, 65, 12, 0.1);
+  --ink-0: #ededeb;
+  --ink-1: #cfcfcb;
+  --ink-2: #9a9a97;
+  --ink-3: #5c5c5a;
+  --ink-4: #111111;
+  --danger: #b91c1c;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 8px 24px rgba(0, 0, 0, 0.06);
+  color-scheme: light;
+}
+
+.dark {
+  --bg: #0f0f0f;
+  --bg-elev: #171716;
+  --bg-sidebar: rgba(20, 20, 19, 0.72);
+  --fg: #f2f2f0;
+  --fg-2: #a3a3a0;
+  --fg-3: #6b6b68;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.18);
+  --accent: #fb923c;
+  --accent-soft: rgba(251, 146, 60, 0.14);
+  --ink-0: #232322;
+  --ink-1: #3a3a38;
+  --ink-2: #6b6b68;
+  --ink-3: #a3a3a0;
+  --ink-4: #f2f2f0;
+  --danger: #f87171;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.4);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-elev: var(--bg-elev);
+  --color-fg: var(--fg);
+  --color-fg-2: var(--fg-2);
+  --color-fg-3: var(--fg-3);
+  --color-line: var(--line);
+  --color-line-strong: var(--line-strong);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-danger: var(--danger);
+  --font-sans: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'SF Pro Display', 'PingFang TC', 'PingFang SC', 'Hiragino Sans', 'Helvetica Neue', sans-serif;
+  --font-serif: 'New York', 'Iowan Old Style', 'Songti TC', 'Songti SC', Georgia, serif;
+}
+
+:root {
+  --font-body: var(--font-sans);
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+    margin: 0;
+  }
+
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--fg);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  .selectable,
+  textarea,
+  input {
+    user-select: text;
+  }
+
+  .drag {
+    -webkit-app-region: drag;
+  }
+  .no-drag {
+    -webkit-app-region: no-drag;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: var(--line-strong);
+    border-radius: 999px;
+    border: 3px solid transparent;
+    background-clip: padding-box;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  textarea::placeholder,
+  input::placeholder {
+    color: var(--fg-3);
+  }
+  textarea:focus,
+  input:focus,
+  button:focus-visible,
+  select:focus {
+    outline: none;
+  }
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .journal-font {
+    font-family: var(--font-body);
+  }
+
+  .editor-body {
+    font-size: 17px;
+    line-height: 30px;
+    resize: none;
+    background: transparent;
+    border: 0;
+    width: 100%;
+    min-height: 50vh;
+    background-attachment: local;
+    background-position: 0 0;
+  }
+  .paper-ruled .editor-body {
+    background-image: repeating-linear-gradient(to bottom, transparent 0 29px, var(--line-strong) 29px 30px);
+  }
+  .paper-dotted .editor-body {
+    background-image: radial-gradient(circle, var(--line-strong) 1.1px, transparent 1.4px);
+    background-size: 30px 30px;
+    background-position: 0 14px;
+  }
+
+  .leaflet-container {
+    background: var(--bg-elev);
+    font-family: var(--font-sans);
+  }
+  .leaflet-tile-pane {
+    filter: saturate(0.85);
+  }
+  .leaflet-control-attribution {
+    background: transparent !important;
+    color: var(--fg-3) !important;
+    font-size: 10px;
+  }
+  .leaflet-control-attribution a {
+    color: var(--fg-3) !important;
+  }
+  .leaflet-bar a {
+    background: var(--bg) !important;
+    color: var(--fg) !important;
+    border-color: var(--line) !important;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
