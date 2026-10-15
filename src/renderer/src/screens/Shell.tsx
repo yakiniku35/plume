@@ -68,7 +68,7 @@ export function Shell(): JSX.Element {
         </button>
       </aside>
       <main className="relative min-w-0 flex-1 bg-bg">
-        <div className="drag absolute inset-x-0 top-0 h-[52px]" />
+        <div className="drag absolute inset-x-0 top-0 z-10 h-[52px] bg-gradient-to-b from-bg via-bg/85 to-transparent" />
         {view === 'journal' && (selectedId ? <Editor key={selectedId} /> : <Home />)}
         {view === 'insights' && <Insights />}
         {view === 'settings' && <Settings />}
