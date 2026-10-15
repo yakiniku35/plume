@@ -74,6 +74,40 @@ export type Avatar =
   | { kind: 'emoji'; emoji: string; tone: 0 | 1 | 2 | 3 | 4 | 5; bg: string }
   | { kind: 'image'; file: string; bg: string }
 
+/** Native Apple Maps (macOS MapKit via the bundled plume-maps helper). */
+export interface MapSnapshotRequest {
+  lat?: number
+  lng?: number
+  latDelta?: number
+  lngDelta?: number
+  width: number
+  height: number
+  dark: boolean
+  scale: number
+  markers?: { lat: number; lng: number }[]
+  /** Fit the region to the markers instead of using lat/lng/deltas. */
+  fit?: boolean
+}
+export interface MapRegion {
+  lat: number
+  lng: number
+  latDelta: number
+  lngDelta: number
+}
+export interface MapSnapshot {
+  /** PNG as a data: URL. */
+  src: string
+  /** Pixel position (CSS px) of each requested marker. */
+  points: [number, number][]
+  region: MapRegion
+}
+export interface PlaceResult {
+  name: string
+  address: string
+  lat: number
+  lng: number
+}
+
 export interface User {
   id: string
   email: string
@@ -205,6 +239,12 @@ export interface PlumeApi {
   voice: {
     requestMicrophone(): Promise<boolean>
     transcribeCloud(input: { bytes: ArrayBuffer; mime: string; language: WhisperLanguage }): Promise<string>
+  }
+  maps: {
+    /** true on macOS when the native helper is available. */
+    available(): Promise<boolean>
+    snapshot(req: MapSnapshotRequest): Promise<MapSnapshot>
+    search(q: string, near?: { lat: number; lng: number }): Promise<PlaceResult[]>
   }
   app: {
     openExternal(url: string): Promise<void>

@@ -11,6 +11,7 @@ import { importFile, saveRecording, deleteAttachment } from './media'
 import { cacheInfo, clearCache, gdriveConnect, gdriveDisconnect, localPathFor, migrate } from './storage'
 import { reverseGeocode } from './geocode'
 import { transcribeCloud } from './transcribe'
+import { nativeMapsAvailable, snapshot, searchPlaces, reverseNative } from './maps'
 
 const isObj = (v: unknown): v is Record<string, unknown> => typeof v === 'object' && v !== null
 const str = (v: unknown, max = 10_000): string => {
@@ -238,8 +239,40 @@ export function registerIpc(): void {
     if (!/^https?:\/\//i.test(u)) throw new Error('BAD_URL')
     return shell.openExternal(u)
   })
-  ipcMain.handle('app:reverseGeocode', (_e, p) => {
+  ipcMain.handle('app:reverseGeocode', async (_e, p) => {
     if (!isObj(p) || typeof p.lat !== 'number' || typeof p.lng !== 'number') throw new Error('BAD_REQUEST')
+    if (nativeMapsAvailable()) {
+      const name = await reverseNative(p.lat, p.lng).catch(() => null)
+      if (name) return name
+    }
     return reverseGeocode(p.lat, p.lng)
+  })
+
+  // maps (native Apple Maps on macOS)
+  ipcMain.handle('maps:available', () => nativeMapsAvailable())
+  ipcMain.handle('maps:snapshot', (_e, raw) => {
+    if (!isObj(raw)) throw new Error('BAD_REQUEST')
+    const num = (v: unknown, lo: number, hi: number): number | undefined => (typeof v === 'number' && Number.isFinite(v) ? Math.min(hi, Math.max(lo, v)) : undefined)
+    const markers = Array.isArray(raw.markers)
+      ? raw.markers.filter(isObj).map((m) => ({ lat: num(m.lat, -90, 90) ?? 0, lng: num(m.lng, -180, 180) ?? 0 })).slice(0, 200)
+      : []
+    return snapshot({
+      lat: num(raw.lat, -85, 85),
+      lng: num(raw.lng, -180, 180),
+      latDelta: num(raw.latDelta, 0.0005, 170),
+      lngDelta: num(raw.lngDelta, 0.0005, 360),
+      width: Math.round(num(raw.width, 16, 4096) ?? 600),
+      height: Math.round(num(raw.height, 16, 4096) ?? 400),
+      dark: Boolean(raw.dark),
+      scale: num(raw.scale, 1, 3) ?? 2,
+      markers,
+      fit: Boolean(raw.fit)
+    })
+  })
+  ipcMain.handle('maps:search', (_e, q, near) => {
+    const query = str(q, 200).trim()
+    if (!query) return []
+    const n = isObj(near) && typeof near.lat === 'number' && typeof near.lng === 'number' ? { lat: near.lat, lng: near.lng } : undefined
+    return searchPlaces(query, n)
   })
 }

@@ -60,6 +60,11 @@ const api: PlumeApi = {
     requestMicrophone: () => invoke('voice:requestMicrophone'),
     transcribeCloud: (input) => invoke('voice:transcribeCloud', input)
   },
+  maps: {
+    available: () => invoke('maps:available'),
+    snapshot: (req) => invoke('maps:snapshot', req),
+    search: (q, near) => invoke('maps:search', q, near)
+  },
   app: {
     openExternal: (url) => invoke('app:openExternal', url),
     reverseGeocode: (p) => invoke('app:reverseGeocode', p),
