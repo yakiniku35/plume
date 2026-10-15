@@ -1,0 +1,77 @@
+{
+  "name": "plume-journal",
+  "productName": "Plume",
+  "version": "0.1.0",
+  "description": "A quiet, Apple-style journal for macOS — write, speak, attach photos, and see your month at a glance.",
+  "main": "./out/main/index.js",
+  "author": "yakiniku35",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "dev": "electron-vite dev",
+    "build": "electron-vite build",
+    "preview": "electron-vite preview",
+    "typecheck": "tsc --noEmit -p tsconfig.node.json && tsc --noEmit -p tsconfig.web.json",
+    "icon": "node scripts/make-icon.mjs",
+    "dist": "electron-vite build && electron-builder --mac --dir",
+    "dist:dmg": "electron-vite build && electron-builder --mac",
+    "test": "node --test src/renderer/src/lib/*.test.mts"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^3.5.0",
+    "bcryptjs": "^2.4.3",
+    "date-fns": "^4.1.0",
+    "exifr": "^7.1.3",
+    "leaflet": "^1.9.4",
+    "lucide-react": "^0.468.0",
+    "motion": "^11.15.0",
+    "nanoid": "^5.0.9",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1"
+  },
+  "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
+    "@tailwindcss/vite": "^4.0.0",
+    "@types/bcryptjs": "^2.4.6",
+    "@types/leaflet": "^1.9.14",
+    "@types/node": "^22.10.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "electron": "^33.2.1",
+    "electron-builder": "^25.1.8",
+    "electron-vite": "^2.3.0",
+    "tailwindcss": "^4.0.0",
+    "typescript": "^5.7.2",
+    "vite": "^5.4.11"
+  },
+  "build": {
+    "appId": "com.yakiniku35.plume",
+    "productName": "Plume",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "out/**/*",
+      "package.json"
+    ],
+    "mac": {
+      "category": "public.app-category.lifestyle",
+      "icon": "build/icon.icns",
+      "target": [
+        "dmg",
+        "zip"
+      ],
+      "darkModeSupport": true,
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "Plume uses the microphone to transcribe your voice into journal entries.",
+        "NSLocationWhenInUseUsageDescription": "Plume can tag entries with your current location."
+      }
+    },
+    "dmg": {
+      "sign": false
+    }
+  }
+}
