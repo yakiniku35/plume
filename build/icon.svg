@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 1024 1024">
+  <!-- macOS squircle, paper -->
+  <rect x="0" y="0" width="1024" height="1024" rx="228" fill="#f4f0e8"/>
+  <!-- quill pen, black monoline. Same geometry as src/renderer/src/components/Logo.tsx (viewBox 100, scaled 7.4x). -->
+  <g transform="translate(142 142) scale(7.4)" fill="none" stroke="#111111" stroke-width="3.1" stroke-linecap="round" stroke-linejoin="round">
+    <!-- shaft from tip of vane down to the nib -->
+    <path d="M78 12 C 62 26, 44 50, 30 72"/>
+    <!-- vane -->
+    <path d="M78 12 C 50 12, 30 36, 33 62"/>
+    <path d="M78 12 C 90 38, 72 64, 36 66"/>
+    <!-- barbs -->
+    <path d="M58 34 L 70 27"/>
+    <path d="M50 45 L 64 39"/>
+    <path d="M43 55 L 56 50"/>
+    <!-- nib -->
+    <path d="M30 72 L 24 84"/>
+    <path d="M26.5 77.5 L 33 80"/>
+    <!-- a line of ink -->
+    <path d="M20 90 C 34 86, 48 88, 62 90" stroke-width="2.4" opacity="0.55"/>
+  </g>
+</svg>
