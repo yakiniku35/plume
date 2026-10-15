@@ -16,6 +16,8 @@ interface AppState {
   settings: Settings | null
   storage: StorageConfig | null
   dark: boolean
+  /** Native Apple Maps helper available (macOS). */
+  nativeMaps: boolean
   view: View
   selectedId: string | null
   query: string
@@ -66,6 +68,7 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
   const [marks, setMarks] = useState<DayMark[]>([])
   const [settings, setSettingsState] = useState<Settings | null>(null)
   const [storage, setStorageState] = useState<StorageConfig | null>(null)
+  const [nativeMaps, setNativeMaps] = useState(false)
   const [nativeDark, setNativeDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
   const [view, setView] = useState<View>('journal')
   const [selectedId, selectRaw] = useState<string | null>(null)
@@ -107,7 +110,8 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
 
   useEffect(() => {
     void (async () => {
-      const [s, u, st] = await Promise.all([window.plume.settings.get(), window.plume.auth.session(), window.plume.storage.get()])
+      const [s, u, st, nm] = await Promise.all([window.plume.settings.get(), window.plume.auth.session(), window.plume.storage.get(), window.plume.maps.available().catch(() => false)])
+      setNativeMaps(nm)
       setSettingsState(s)
       setStorageState(st)
       setUser(u)
@@ -252,11 +256,11 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
 
   const value = useMemo<AppState & AppActions>(
     () => ({
-      booted, user, entries, marks, settings, storage, dark, view, selectedId, query, saving,
+      booted, user, entries, marks, settings, storage, dark, nativeMaps, view, selectedId, query, saving,
       setView, select, setQuery, login, register, logout, newEntry, updateEntry, patchEntry, deleteEntry, refreshEntries, saveMark, deleteMark, updateProfile, pickAvatarImage,
       setSettings, setOpenaiKey, setAppleMapsToken, pickFont, setStorage, refreshStorage
     }),
-    [booted, user, entries, marks, settings, storage, dark, view, selectedId, query, saving, login, register, logout, newEntry, updateEntry, patchEntry, deleteEntry, refreshEntries, saveMark, deleteMark, updateProfile, pickAvatarImage, setSettings, setOpenaiKey, setAppleMapsToken, pickFont, setStorage, refreshStorage]
+    [booted, user, entries, marks, settings, storage, dark, nativeMaps, view, selectedId, query, saving, login, register, logout, newEntry, updateEntry, patchEntry, deleteEntry, refreshEntries, saveMark, deleteMark, updateProfile, pickAvatarImage, setSettings, setOpenaiKey, setAppleMapsToken, pickFont, setStorage, refreshStorage]
   )
 
   return (

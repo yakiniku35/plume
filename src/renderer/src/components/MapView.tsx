@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Tooltip, useMap, useMapEvents } from 'react-leaflet'
 import type { GeoPoint } from '@shared/types'
 import { useApp } from '@/lib/store'
+import { AppleNativeMap } from './AppleNativeMap'
 
 export interface MapMarker extends GeoPoint {
   label?: string
@@ -18,10 +19,12 @@ export interface MapViewProps {
   className?: string
 }
 
-/** Apple Maps (MapKit JS) when a token is configured, otherwise a clean OpenStreetMap basemap via Leaflet. */
+/** Apple Maps: MapKit JS when a token is configured, the native macOS renderer otherwise; OpenStreetMap only off-Mac. */
 export function MapView(props: MapViewProps): JSX.Element {
-  const { settings } = useApp()
-  return settings?.appleMapsTokenSet ? <AppleMap {...props} /> : <LeafletMap {...props} />
+  const { settings, nativeMaps } = useApp()
+  if (settings?.appleMapsTokenSet) return <AppleMap {...props} />
+  if (nativeMaps) return <AppleNativeMap {...props} />
+  return <LeafletMap {...props} />
 }
 
 export function appleMapsUrl(p: GeoPoint): string {
