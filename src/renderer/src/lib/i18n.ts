@@ -217,7 +217,12 @@ const en = {
   hintActiveDays: 'Days in the last 30 with at least one entry.',
   hintAvgWords: 'Average words per active day in the last 30 days.',
   weekOf: 'Week of {date}',
-  hourRange: '{from}–{to}'
+  hourRange: '{from}–{to}',
+  searchPlaces: 'Search places…',
+  noPlacesFound: 'No places found.',
+  mapsByApple: 'Apple Maps',
+  zoomIn: 'Zoom in',
+  zoomOut: 'Zoom out'
 }
 
 export type Dict = typeof en
@@ -438,7 +443,12 @@ const zhHans: Dict = {
   hintActiveDays: '过去 30 天里至少写了一篇的天数。',
   hintAvgWords: '过去 30 天里，有写的日子平均字数。',
   weekOf: '{date} 那一周',
-  hourRange: '{from}–{to}'
+  hourRange: '{from}–{to}',
+  searchPlaces: '搜索地点…',
+  noPlacesFound: '找不到这个地点。',
+  mapsByApple: 'Apple 地图',
+  zoomIn: '放大',
+  zoomOut: '缩小'
 }
 
 const zhHant: Dict = {
@@ -637,7 +647,12 @@ const zhHant: Dict = {
   hintActiveDays: '過去 30 天裡至少寫了一篇的天數。',
   hintAvgWords: '過去 30 天裡，有寫的日子平均字數。',
   weekOf: '{date} 那一週',
-  hourRange: '{from}–{to}'
+  hourRange: '{from}–{to}',
+  searchPlaces: '搜尋地點…',
+  noPlacesFound: '找不到這個地點。',
+  mapsByApple: 'Apple 地圖',
+  zoomIn: '放大',
+  zoomOut: '縮小'
 }
 
 export const dictionaries: Record<Locale, Dict> = { en, 'zh-Hans': zhHans, 'zh-Hant': zhHant }
