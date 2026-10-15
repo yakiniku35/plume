@@ -222,7 +222,24 @@ const en = {
   noPlacesFound: 'No places found.',
   mapsByApple: 'Apple Maps',
   zoomIn: 'Zoom in',
-  zoomOut: 'Zoom out'
+  zoomOut: 'Zoom out',
+  avatarModeEmoji: 'Emoji',
+  avatarModeBuilt: 'Build a person',
+  avatarBuiltIntro: 'Pick each part: hair, eyes, eyebrows, mouth, skin, glasses, beard and clothes.',
+  partTop: 'Hair & hats',
+  partHairColor: 'Hair colour',
+  partSkin: 'Skin',
+  partEyes: 'Eyes',
+  partEyebrows: 'Eyebrows',
+  partMouth: 'Mouth',
+  partAccessories: 'Glasses',
+  partFacialHair: 'Beard',
+  partFacialHairColor: 'Beard colour',
+  partClothing: 'Clothes',
+  partClothesColor: 'Clothes colour',
+  none: 'None',
+  randomize: 'Surprise me',
+  avatarCredit: 'Avataaars by Pablo Stanley'
 }
 
 export type Dict = typeof en
@@ -448,7 +465,24 @@ const zhHans: Dict = {
   noPlacesFound: '找不到这个地点。',
   mapsByApple: 'Apple 地图',
   zoomIn: '放大',
-  zoomOut: '缩小'
+  zoomOut: '缩小',
+  avatarModeEmoji: 'Emoji',
+  avatarModeBuilt: '自定人物',
+  avatarBuiltIntro: '逐一选择：发型、眼睛、眉毛、嘴巴、肤色、眼镜、胡子和衣服。',
+  partTop: '发型与帽子',
+  partHairColor: '发色',
+  partSkin: '肤色',
+  partEyes: '眼睛',
+  partEyebrows: '眉毛',
+  partMouth: '嘴巴',
+  partAccessories: '眼镜',
+  partFacialHair: '胡子',
+  partFacialHairColor: '胡子颜色',
+  partClothing: '衣服',
+  partClothesColor: '衣服颜色',
+  none: '无',
+  randomize: '随机',
+  avatarCredit: 'Avataaars by Pablo Stanley'
 }
 
 const zhHant: Dict = {
@@ -652,7 +686,24 @@ const zhHant: Dict = {
   noPlacesFound: '找不到這個地點。',
   mapsByApple: 'Apple 地圖',
   zoomIn: '放大',
-  zoomOut: '縮小'
+  zoomOut: '縮小',
+  avatarModeEmoji: 'Emoji',
+  avatarModeBuilt: '自訂人物',
+  avatarBuiltIntro: '逐一選擇：髮型、眼睛、眉毛、嘴巴、膚色、眼鏡、鬍子和衣服。',
+  partTop: '髮型與帽子',
+  partHairColor: '髮色',
+  partSkin: '膚色',
+  partEyes: '眼睛',
+  partEyebrows: '眉毛',
+  partMouth: '嘴巴',
+  partAccessories: '眼鏡',
+  partFacialHair: '鬍子',
+  partFacialHairColor: '鬍子顏色',
+  partClothing: '衣服',
+  partClothesColor: '衣服顏色',
+  none: '無',
+  randomize: '隨機',
+  avatarCredit: 'Avataaars by Pablo Stanley'
 }
 
 export const dictionaries: Record<Locale, Dict> = { en, 'zh-Hans': zhHans, 'zh-Hant': zhHant }

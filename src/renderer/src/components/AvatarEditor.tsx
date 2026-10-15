@@ -1,13 +1,18 @@
+import { useState } from 'react'
 import { Upload } from 'lucide-react'
 import type { Avatar as AvatarT } from '@shared/types'
 import { useI18n } from '@/lib/i18n'
 import { PEOPLE_EMOJI, SKIN_TONES, AVATAR_BGS, applyTone, defaultAvatar } from '@/lib/avatar'
-import { Button, cx } from '@/components/ui'
+import { Button, Segmented, cx } from '@/components/ui'
 import { Avatar } from '@/components/Avatar'
+import { AvatarBuilder } from '@/components/AvatarBuilder'
+import { DEFAULT_PARTS } from '@/lib/avatarBuilder'
 
 export function AvatarEditor({ value, onChange, onUpload }: { value?: AvatarT; onChange: (a: AvatarT) => void; onUpload: () => void }): JSX.Element {
   const { t } = useI18n()
   const a = value ?? defaultAvatar()
+  const [mode, setMode] = useState<'emoji' | 'built'>(a.kind === 'built' ? 'built' : 'emoji')
+  const builtParts = a.kind === 'built' ? a.parts : DEFAULT_PARTS
   const tone = a.kind === 'emoji' ? a.tone : 0
   const emoji = a.kind === 'emoji' ? a.emoji : ''
   const setEmoji = (e: string): void => onChange({ kind: 'emoji', emoji: e, tone: tone as 0, bg: a.bg })
@@ -23,6 +28,33 @@ export function AvatarEditor({ value, onChange, onUpload }: { value?: AvatarT; o
         </Button>
       </div>
       <div className="min-w-0 flex-1 space-y-5">
+        <Segmented
+          value={mode}
+          onChange={(m) => {
+            setMode(m)
+            if (m === 'built' && a.kind !== 'built') onChange({ kind: 'built', parts: builtParts, bg: a.bg })
+            if (m === 'emoji' && a.kind === 'built') onChange({ kind: 'emoji', emoji: '🧑', tone: 0, bg: a.bg })
+          }}
+          options={[
+            { value: 'emoji', label: t('avatarModeEmoji') },
+            { value: 'built', label: t('avatarModeBuilt') }
+          ]}
+        />
+        {mode === 'built' ? (
+          <>
+            <p className="text-[13px] leading-relaxed text-fg-2">{t('avatarBuiltIntro')}</p>
+            <AvatarBuilder parts={builtParts} onChange={(parts) => onChange({ kind: 'built', parts, bg: a.bg })} />
+            <div>
+              <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('background')}</div>
+              <div className="flex flex-wrap gap-1.5">
+                {AVATAR_BGS.map((bg) => (
+                  <button key={bg} onClick={() => setBg(bg)} aria-pressed={a.bg === bg} className={cx('size-7 rounded-full border transition-transform', a.bg === bg ? 'scale-110 border-fg' : 'border-line')} style={{ background: bg }} />
+                ))}
+              </div>
+            </div>
+          </>
+        ) : (
+        <>
         <p className="text-[13px] leading-relaxed text-fg-2">{t('avatarIntro')}</p>
         <div className="flex flex-wrap gap-1">
           {PEOPLE_EMOJI.map((e) => (
@@ -54,6 +86,8 @@ export function AvatarEditor({ value, onChange, onUpload }: { value?: AvatarT; o
             </div>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   )
