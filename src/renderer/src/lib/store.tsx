@@ -207,7 +207,8 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
       if (action === 'settings') setView('settings')
       if (action === 'search') {
         setView('journal')
-        document.getElementById('search-input')?.focus()
+        // The search box mounts with the journal view; focus it after React has rendered.
+        requestAnimationFrame(() => document.getElementById('search-input')?.focus())
       }
     })
   }, [user, newEntry])
