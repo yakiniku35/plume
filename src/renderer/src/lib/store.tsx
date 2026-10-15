@@ -86,12 +86,13 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
     void window.plume.entries.remove(id)
   }, [])
 
+  const selectedRef = useRef<string | null>(null)
+  selectedRef.current = selectedId
   const select = useCallback(
     (id: string | null) => {
-      selectRaw((prev) => {
-        if (prev && prev !== id) discardIfEmpty(prev)
-        return id
-      })
+      const prev = selectedRef.current
+      if (prev && prev !== id) discardIfEmpty(prev)
+      selectRaw(id)
     },
     [discardIfEmpty]
   )
