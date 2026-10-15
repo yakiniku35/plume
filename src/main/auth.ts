@@ -9,8 +9,15 @@ interface Account extends User {
   passwordHash: string
 }
 
+let sessionCache: { id: string | null; user: User | null } | null = null
+
 function loadAccounts(): Account[] {
   return readJson<Account[]>(paths.accounts(), [])
+}
+
+function saveAccounts(accounts: Account[]): void {
+  writeJson(paths.accounts(), accounts)
+  sessionCache = null
 }
 
 function toUser(a: Account): User {
@@ -41,8 +48,9 @@ export function register(input: { email: string; password: string; name: string 
     createdAt: new Date().toISOString(),
     passwordHash: bcrypt.hashSync(input.password, 10)
   }
-  writeJson(paths.accounts(), [...accounts, account])
+  saveAccounts([...accounts, account])
   setSettings({ sessionUserId: account.id })
+  sessionCache = null
   return toUser(account)
 }
 
@@ -53,18 +61,22 @@ export function login(input: { email: string; password: string }): User {
     throw new AuthError('INVALID_CREDENTIALS')
   }
   setSettings({ sessionUserId: account.id })
+  sessionCache = null
   return toUser(account)
 }
 
 export function logout(): void {
   setSettings({ sessionUserId: null })
+  sessionCache = null
 }
 
+/** Cached: the media://, thumb:// and avatar:// handlers call this for every request. */
 export function currentUser(): User | null {
+  if (sessionCache) return sessionCache.user
   const id = getSettings().sessionUserId
-  if (!id) return null
-  const account = loadAccounts().find((a) => a.id === id)
-  return account ? toUser(account) : null
+  const account = id ? loadAccounts().find((a) => a.id === id) : undefined
+  sessionCache = { id, user: account ? toUser(account) : null }
+  return sessionCache.user
 }
 
 export function updateProfile(userId: string, patch: { name?: string; avatar?: Avatar }): User {
@@ -75,7 +87,7 @@ export function updateProfile(userId: string, patch: { name?: string; avatar?: A
   if (patch.name !== undefined) next.name = patch.name.trim() || next.name
   if (patch.avatar !== undefined) next.avatar = patch.avatar
   accounts[idx] = next
-  writeJson(paths.accounts(), accounts)
+  saveAccounts(accounts)
   return toUser(next)
 }
 
