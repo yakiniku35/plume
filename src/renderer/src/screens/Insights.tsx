@@ -25,9 +25,9 @@ export function Insights(): JSX.Element {
 
         <Card className="mb-5 flex items-center justify-between gap-8">
           <div className="flex flex-wrap gap-12">
-            <Stat label={t('todayCard')} value={nf.format(s.today.words)} sub={t('words')} accent={s.today.words > 0} />
-            <Stat label={t('streak')} value={s.streak} sub={t('streakDays', { n: s.streak })} />
-            <Stat label={t('longestStreak')} value={s.longestStreak} sub={t('streakDays', { n: s.longestStreak })} />
+            <Stat label={t('todayCard')} value={nf.format(s.today.words)} sub={t('words')} accent={s.today.words > 0} hint={t('hintToday')} />
+            <Stat label={t('streak')} value={s.streak} sub={t('streakDays', { n: s.streak })} hint={t('hintStreak')} />
+            <Stat label={t('longestStreak')} value={s.longestStreak} sub={t('streakDays', { n: s.longestStreak })} hint={t('hintLongest')} />
           </div>
           {s.today.entries === 0 && (
             <div className="max-w-[260px] text-right">
@@ -55,9 +55,9 @@ export function Insights(): JSX.Element {
           <div className="flex flex-wrap items-start gap-12">
             <DayGrid cells={w.cells} labelFor={(c) => `${fmtDay(c.date, locale, dict)} · ${t('wordsN', { n: c.words })}${c.mood ? ` · ${dict.moods[Math.round(c.mood) - 1]}` : ''}`} />
             <div className="grid flex-1 grid-cols-3 gap-8">
-              <Stat label={t('totalWords')} value={nf.format(w.totalWords)} />
-              <Stat label={t('activeDays')} value={`${w.activeDays}/30`} />
-              <Stat label={t('avgWords')} value={nf.format(w.avgWords)} sub={t('words')} />
+              <Stat label={t('totalWords')} value={nf.format(w.totalWords)} hint={t('hintTotalWords')} />
+              <Stat label={t('activeDays')} value={`${w.activeDays}/30`} hint={t('hintActiveDays')} />
+              <Stat label={t('avgWords')} value={nf.format(w.avgWords)} sub={t('words')} hint={t('hintAvgWords')} />
             </div>
           </div>
         </Card>
@@ -65,7 +65,7 @@ export function Insights(): JSX.Element {
         <div className="mb-5 grid grid-cols-2 gap-5">
           <Card>
             <SectionTitle>{t('wordsPerWeek')}</SectionTitle>
-            <Bars values={s.weeks.map((x) => x.words)} labels={s.weeks.map((x) => fmtShort(x.start + 'T00:00:00', locale))} />
+            <Bars values={s.weeks.map((x) => x.words)} labels={s.weeks.map((x) => fmtShort(x.start + 'T00:00:00', locale))} tooltip={(i) => `${t('weekOf', { date: fmtShort(s.weeks[i].start + 'T00:00:00', locale) })} · ${t('wordsN', { n: nf.format(s.weeks[i].words) })}`} />
           </Card>
           <Card>
             <SectionTitle>{t('moodOverTime')}</SectionTitle>
@@ -75,7 +75,7 @@ export function Insights(): JSX.Element {
 
         <Card className="mb-5">
           <SectionTitle aside={entries.length > 0 && <span className="text-[12px] text-fg-3">{String(peakHour).padStart(2, '0')}:00</span>}>{t('timeOfDay')}</SectionTitle>
-          <Bars values={s.hours} labels={['00', '', '', '', '', '', '', '', '', '', '', '', '12', '', '', '', '', '', '', '', '', '', '', '23']} height={80} highlightLast={false} />
+          <Bars values={s.hours} labels={['00', '', '', '', '', '', '', '', '', '', '', '', '12', '', '', '', '', '', '', '', '', '', '', '23']} height={80} highlightLast={false} tooltip={(i) => `${t('hourRange', { from: `${String(i).padStart(2, '0')}:00`, to: `${String(i + 1).padStart(2, '0')}:00` })} · ${t('entriesN', { n: s.hours[i] })}`} />
         </Card>
 
         <Card className="mb-5">
