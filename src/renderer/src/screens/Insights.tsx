@@ -85,7 +85,7 @@ export function Insights(): JSX.Element {
           ) : (
             <div className="grid grid-cols-[1fr_260px] gap-6">
               <div className="h-[320px] overflow-hidden rounded-xl border border-line">
-                <MapView interactive={false} markers={s.places.map((p) => ({ ...p.point, weight: p.count, label: `${p.name || `${p.point.lat.toFixed(3)}, ${p.point.lng.toFixed(3)}`} · ${t('entriesN', { n: p.count })}` }))} />
+                <MapView markers={s.places.map((p) => ({ ...p.point, weight: p.count, label: `${p.name || `${p.point.lat.toFixed(3)}, ${p.point.lng.toFixed(3)}`} · ${t('entriesN', { n: p.count })}` }))} />
               </div>
               <div>
                 <div className="mb-3 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('topPlaces')}</div>

@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useRef, useState, type PointerEvent, type WheelEvent } from 'react'
-import { Plus, Minus } from 'lucide-react'
+import { useCallback, useEffect, useRef, useState, type PointerEvent } from 'react'
+import { Plus, Minus, Maximize2 } from 'lucide-react'
 import type { MapRegion, MapSnapshot } from '@shared/types'
 import { useApp } from '@/lib/store'
 import { useI18n } from '@/lib/i18n'
@@ -38,8 +38,10 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
   const [loading, setLoading] = useState(false)
   const [drag, setDrag] = useState<{ x0: number; y0: number; dx: number; dy: number } | null>(null)
   const reqId = useRef(0)
+  const [userMoved, setUserMoved] = useState(false)
   const markerKey = JSON.stringify(markers)
-  const fitMode = !center && markers.length > 0
+  // Fit all markers until the user pans or zooms; then the region they chose is the input.
+  const fitMode = !center && markers.length > 0 && !userMoved
 
   useEffect(() => {
     const el = box.current
@@ -108,20 +110,34 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
     if (moved) {
       // Shift the centre by the dragged distance (mercator-correct vertically).
       const c = pixelToCoord(size.w / 2 - drag.dx, size.h / 2 - drag.dy, size.w, size.h, region)
+      setUserMoved(true)
       setRegion({ ...region, lat: c.lat, lng: c.lng })
     } else if (onClick) {
       const rect = e.currentTarget.getBoundingClientRect()
       onClick(pixelToCoord(e.clientX - rect.left, e.clientY - rect.top, size.w, size.h, region))
     }
   }
-  function zoomBy(factor: number): void {
-    if (!region) return
-    setRegion({ ...region, latDelta: clamp(region.latDelta * factor, 0.0008, 150), lngDelta: clamp(region.lngDelta * factor, 0.0008, 300) })
-  }
-  function onWheel(e: WheelEvent<HTMLDivElement>): void {
-    if (!interactive) return
-    e.preventDefault()
-    zoomBy(2 ** (e.deltaY / 240))
+  const zoomBy = useCallback(
+    (factor: number): void => {
+      setUserMoved(true)
+      setRegion((r) => (r ? { ...r, latDelta: clamp(r.latDelta * factor, 0.0008, 150), lngDelta: clamp(r.lngDelta * factor, 0.0008, 300) } : r))
+    },
+    []
+  )
+  // React registers wheel listeners as passive, so attach a native one to be able to stop page scrolling.
+  useEffect(() => {
+    const el = box.current
+    if (!el || !interactive) return
+    const onWheel = (e: globalThis.WheelEvent): void => {
+      e.preventDefault()
+      zoomBy(2 ** (e.deltaY / 240))
+    }
+    el.addEventListener('wheel', onWheel, { passive: false })
+    return () => el.removeEventListener('wheel', onWheel)
+  }, [interactive, zoomBy])
+  function fitAll(): void {
+    setUserMoved(false)
+    setRegion(null)
   }
 
   return (
@@ -132,7 +148,6 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
       onPointerMove={onPointerMove}
       onPointerUp={onPointerUp}
       onPointerCancel={() => setDrag(null)}
-      onWheel={onWheel}
     >
       {snap && (
         <img
@@ -159,6 +174,11 @@ export function AppleNativeMap({ markers, center, zoom = 13, onClick, interactiv
           <button aria-label={t('zoomOut')} onClick={(e) => { e.stopPropagation(); zoomBy(2) }} onPointerDown={(e) => e.stopPropagation()} className="flex size-8 items-center justify-center border-t border-line text-fg-2 hover:text-fg">
             <Minus size={14} />
           </button>
+          {!center && markers.length > 0 && userMoved && (
+            <button aria-label={t('fitAll')} title={t('fitAll')} onClick={(e) => { e.stopPropagation(); fitAll() }} onPointerDown={(e) => e.stopPropagation()} className="flex size-8 items-center justify-center border-t border-line text-fg-2 hover:text-fg">
+              <Maximize2 size={14} />
+            </button>
+          )}
         </div>
       )}
       <span className="pointer-events-none absolute bottom-2 left-3 text-[10px] text-fg-3"> {t('mapsByApple')}</span>

@@ -222,7 +222,8 @@ const en = {
   noPlacesFound: 'No places found.',
   mapsByApple: 'Apple Maps',
   zoomIn: 'Zoom in',
-  zoomOut: 'Zoom out'
+  zoomOut: 'Zoom out',
+  fitAll: 'Show all places'
 }
 
 export type Dict = typeof en
@@ -448,7 +449,8 @@ const zhHans: Dict = {
   noPlacesFound: '找不到这个地点。',
   mapsByApple: 'Apple 地图',
   zoomIn: '放大',
-  zoomOut: '缩小'
+  zoomOut: '缩小',
+  fitAll: '显示全部地点'
 }
 
 const zhHant: Dict = {
@@ -652,7 +654,8 @@ const zhHant: Dict = {
   noPlacesFound: '找不到這個地點。',
   mapsByApple: 'Apple 地圖',
   zoomIn: '放大',
-  zoomOut: '縮小'
+  zoomOut: '縮小',
+  fitAll: '顯示全部地點'
 }
 
 export const dictionaries: Record<Locale, Dict> = { en, 'zh-Hans': zhHans, 'zh-Hant': zhHant }
