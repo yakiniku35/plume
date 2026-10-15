@@ -68,12 +68,33 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
   const [storage, setStorageState] = useState<StorageConfig | null>(null)
   const [nativeDark, setNativeDark] = useState(() => window.matchMedia('(prefers-color-scheme: dark)').matches)
   const [view, setView] = useState<View>('journal')
-  const [selectedId, select] = useState<string | null>(null)
+  const [selectedId, selectRaw] = useState<string | null>(null)
   const [query, setQuery] = useState('')
   const [saving, setSaving] = useState(false)
   const pending = useRef(new Map<string, ReturnType<typeof setTimeout>>())
   const entriesRef = useRef<Entry[]>([])
   entriesRef.current = entries
+
+  /** Drop an entry the user created but never wrote in, so it does not linger as a ghost row. */
+  const discardIfEmpty = useCallback((id: string | null) => {
+    if (!id) return
+    const e = entriesRef.current.find((x) => x.id === id)
+    if (!e || e.title || e.body.trim() || e.attachments.length || e.location || e.mood) return
+    const t = pending.current.get(id)
+    if (t) clearTimeout(t)
+    setEntries((prev) => prev.filter((x) => x.id !== id))
+    void window.plume.entries.remove(id)
+  }, [])
+
+  const select = useCallback(
+    (id: string | null) => {
+      selectRaw((prev) => {
+        if (prev && prev !== id) discardIfEmpty(prev)
+        return id
+      })
+    },
+    [discardIfEmpty]
+  )
 
   const refreshEntries = useCallback(async () => {
     const [list, m] = await Promise.all([window.plume.entries.list(), window.plume.marks.list()])
@@ -140,7 +161,7 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
     setUser(null)
     setEntries([])
     setMarks([])
-    select(null)
+    selectRaw(null)
   }, [])
 
   const newEntry = useCallback((date?: string): Entry => {
@@ -187,7 +208,7 @@ export function AppProvider({ children }: { children: ReactNode }): JSX.Element 
     const t = pending.current.get(id)
     if (t) clearTimeout(t)
     setEntries((prev) => prev.filter((e) => e.id !== id))
-    select((cur) => (cur === id ? null : cur))
+    selectRaw((cur) => (cur === id ? null : cur))
     await window.plume.entries.remove(id)
   }, [])
 
