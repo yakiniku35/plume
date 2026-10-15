@@ -1,4 +1,5 @@
 import type { Avatar } from '@shared/types'
+import { DEFAULT_PARTS } from './avatarBuilder'
 
 export const PEOPLE_EMOJI = ['🧑', '👩', '👨', '👱‍♀️', '👱‍♂️', '👩‍🦰', '👨‍🦰', '👩‍🦱', '👨‍🦱', '👩‍🦳', '👨‍🦳', '👩‍🦲', '👨‍🦲', '🧔', '🧔‍♀️', '👧', '👦', '🧒', '👶', '👵', '👴', '🧓', '🧕', '👳', '👲', '🧑‍🎓', '🧑‍💻', '🧑‍🎨', '🧑‍🍳', '🧑‍🚀', '🧑‍🎤', '🧑‍🔬', '🧑‍🌾', '🧑‍⚕️', '🧙', '🧚', '🧛', '🧜', '🦸', '🦹', '🐱', '🐶', '🐻', '🐼', '🦊', '🐨', '🐸', '🦁']
 export const SKIN_TONES = ['', '\u{1F3FB}', '\u{1F3FC}', '\u{1F3FD}', '\u{1F3FE}', '\u{1F3FF}']
@@ -24,5 +25,5 @@ export function avatarEmoji(a: Avatar | undefined): string {
 }
 
 export function defaultAvatar(): Avatar {
-  return { kind: 'emoji', emoji: '🧑', tone: 0, bg: '#e5e5e1' }
+  return { kind: 'built', parts: { ...DEFAULT_PARTS }, bg: '#e5e5e1' }
 }

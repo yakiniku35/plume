@@ -1,23 +1,17 @@
-import { useState } from 'react'
 import { Upload } from 'lucide-react'
 import type { Avatar as AvatarT } from '@shared/types'
 import { useI18n } from '@/lib/i18n'
-import { PEOPLE_EMOJI, SKIN_TONES, AVATAR_BGS, applyTone, defaultAvatar } from '@/lib/avatar'
-import { Button, Segmented, cx } from '@/components/ui'
+import { AVATAR_BGS, defaultAvatar } from '@/lib/avatar'
+import { DEFAULT_PARTS } from '@/lib/avatarBuilder'
+import { Button, cx } from '@/components/ui'
 import { Avatar } from '@/components/Avatar'
 import { AvatarBuilder } from '@/components/AvatarBuilder'
-import { DEFAULT_PARTS } from '@/lib/avatarBuilder'
 
+/** Profile picture: build a person part by part, or upload a picture (e.g. an exported Memoji sticker). */
 export function AvatarEditor({ value, onChange, onUpload }: { value?: AvatarT; onChange: (a: AvatarT) => void; onUpload: () => void }): JSX.Element {
   const { t } = useI18n()
-  const a = value ?? defaultAvatar()
-  const [mode, setMode] = useState<'emoji' | 'built'>(a.kind === 'built' ? 'built' : 'emoji')
-  const builtParts = a.kind === 'built' ? a.parts : DEFAULT_PARTS
-  const tone = a.kind === 'emoji' ? a.tone : 0
-  const emoji = a.kind === 'emoji' ? a.emoji : ''
-  const setEmoji = (e: string): void => onChange({ kind: 'emoji', emoji: e, tone: tone as 0, bg: a.bg })
-  const setTone = (tn: number): void => onChange({ kind: 'emoji', emoji: emoji || '🧑', tone: tn as 0, bg: a.bg })
-  const setBg = (bg: string): void => onChange({ ...a, bg })
+  const a = value && value.kind !== 'emoji' ? value : defaultAvatar()
+  const parts = a.kind === 'built' ? a.parts : DEFAULT_PARTS
 
   return (
     <div className="flex gap-8">
@@ -28,66 +22,16 @@ export function AvatarEditor({ value, onChange, onUpload }: { value?: AvatarT; o
         </Button>
       </div>
       <div className="min-w-0 flex-1 space-y-5">
-        <Segmented
-          value={mode}
-          onChange={(m) => {
-            setMode(m)
-            if (m === 'built' && a.kind !== 'built') onChange({ kind: 'built', parts: builtParts, bg: a.bg })
-            if (m === 'emoji' && a.kind === 'built') onChange({ kind: 'emoji', emoji: '🧑', tone: 0, bg: a.bg })
-          }}
-          options={[
-            { value: 'emoji', label: t('avatarModeEmoji') },
-            { value: 'built', label: t('avatarModeBuilt') }
-          ]}
-        />
-        {mode === 'built' ? (
-          <>
-            <p className="text-[13px] leading-relaxed text-fg-2">{t('avatarBuiltIntro')}</p>
-            <AvatarBuilder parts={builtParts} onChange={(parts) => onChange({ kind: 'built', parts, bg: a.bg })} />
-            <div>
-              <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('background')}</div>
-              <div className="flex flex-wrap gap-1.5">
-                {AVATAR_BGS.map((bg) => (
-                  <button key={bg} onClick={() => setBg(bg)} aria-pressed={a.bg === bg} className={cx('size-7 rounded-full border transition-transform', a.bg === bg ? 'scale-110 border-fg' : 'border-line')} style={{ background: bg }} />
-                ))}
-              </div>
-            </div>
-          </>
-        ) : (
-        <>
         <p className="text-[13px] leading-relaxed text-fg-2">{t('avatarIntro')}</p>
-        <div className="flex flex-wrap gap-1">
-          {PEOPLE_EMOJI.map((e) => (
-            <button
-              key={e}
-              onClick={() => setEmoji(e)}
-              aria-pressed={emoji === e}
-              className={cx('flex size-10 items-center justify-center rounded-xl text-[24px] leading-none transition-colors', emoji === e ? 'bg-fg/[0.1] ring-1 ring-fg' : 'hover:bg-elev')}
-            >
-              {applyTone(e, tone)}
-            </button>
-          ))}
-        </div>
-        <div className="flex flex-wrap gap-x-10 gap-y-5">
-          <div>
-            <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('skinTone')}</div>
-            <div className="flex flex-wrap gap-1.5">
-              {SKIN_TONES.map((_, i) => (
-                <button key={i} onClick={() => setTone(i)} aria-pressed={tone === i} className={cx('size-7 rounded-full border transition-transform', tone === i ? 'scale-110 border-fg' : 'border-line')} style={{ background: ['#f1c27d', '#ffdbb4', '#e8c39e', '#c68642', '#8d5524', '#4a2912'][i] }} />
-              ))}
-            </div>
-          </div>
-          <div>
-            <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('background')}</div>
-            <div className="flex flex-wrap gap-1.5">
-              {AVATAR_BGS.map((bg) => (
-                <button key={bg} onClick={() => setBg(bg)} aria-pressed={a.bg === bg} className={cx('size-7 rounded-full border transition-transform', a.bg === bg ? 'scale-110 border-fg' : 'border-line')} style={{ background: bg }} />
-              ))}
-            </div>
+        <AvatarBuilder parts={parts} onChange={(next) => onChange({ kind: 'built', parts: next, bg: a.bg })} />
+        <div>
+          <div className="mb-2 text-[12px] font-medium uppercase tracking-[0.08em] text-fg-3">{t('background')}</div>
+          <div className="flex flex-wrap gap-1.5">
+            {AVATAR_BGS.map((bg) => (
+              <button key={bg} onClick={() => onChange({ ...a, bg })} aria-pressed={a.bg === bg} className={cx('size-7 rounded-full border transition-transform', a.bg === bg ? 'scale-110 border-fg' : 'border-line')} style={{ background: bg }} />
+            ))}
           </div>
         </div>
-        </>
-        )}
       </div>
     </div>
   )
