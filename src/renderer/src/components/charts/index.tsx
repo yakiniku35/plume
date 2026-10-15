@@ -57,7 +57,7 @@ export function Bars({ values, labels, tooltip, height = 120, highlightLast = tr
       {labels && (
         <div className="mt-2 flex justify-between text-[11px] text-fg-3">
           {labels.map((l, i) => (
-            <span key={i} className={cx(i !== 0 && i !== labels.length - 1 && 'opacity-0')}>
+            <span key={i} className={cx('whitespace-nowrap', i !== 0 && i !== labels.length - 1 && 'opacity-0')}>
               {l}
             </span>
           ))}

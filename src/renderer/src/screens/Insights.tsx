@@ -3,7 +3,7 @@ import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react'
 import { useApp } from '@/lib/store'
 import { useI18n } from '@/lib/i18n'
 import { summarize, parseKey } from '@/lib/insights'
-import { fmtDay, fmtShort } from '@/lib/dates'
+import { fmtDay, fmtShort, fmtAxis } from '@/lib/dates'
 import { Button, Card, SectionTitle, cx } from '@/components/ui'
 import { DayGrid, Bars, Line, Stat } from '@/components/charts'
 import { MapView } from '@/components/MapView'
@@ -65,7 +65,7 @@ export function Insights(): JSX.Element {
         <div className="mb-5 grid grid-cols-2 gap-5">
           <Card>
             <SectionTitle>{t('wordsPerWeek')}</SectionTitle>
-            <Bars values={s.weeks.map((x) => x.words)} labels={s.weeks.map((x) => fmtShort(x.start + 'T00:00:00', locale))} tooltip={(i) => `${t('weekOf', { date: fmtShort(s.weeks[i].start + 'T00:00:00', locale) })} · ${t('wordsN', { n: nf.format(s.weeks[i].words) })}`} />
+            <Bars values={s.weeks.map((x) => x.words)} labels={s.weeks.map((x) => fmtAxis(x.start, locale))} tooltip={(i) => `${t('weekOf', { date: fmtShort(s.weeks[i].start + 'T00:00:00', locale) })} · ${t('wordsN', { n: nf.format(s.weeks[i].words) })}`} />
           </Card>
           <Card>
             <SectionTitle>{t('moodOverTime')}</SectionTitle>

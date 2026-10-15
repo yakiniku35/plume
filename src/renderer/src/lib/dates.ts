@@ -39,6 +39,11 @@ export function fmtShort(iso: string, locale: Locale): string {
   return format(parseISO(iso), locale === 'en' ? 'MMM d, yyyy' : 'yyyy年M月d日', { locale: fnsLocale[locale] })
 }
 
+/** Short axis label, e.g. 'Oct 6' / '10/6'. */
+export function fmtAxis(key: string, locale: Locale): string {
+  return format(parseDay(key), locale === 'en' ? 'MMM d' : 'M/d', { locale: fnsLocale[locale] })
+}
+
 export function fmtTime(iso: string, locale: Locale): string {
   return format(parseISO(iso), 'HH:mm', { locale: fnsLocale[locale] })
 }
